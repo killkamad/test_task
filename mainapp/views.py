@@ -1,17 +1,17 @@
 from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPIView, )
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
+from rest_framework.renderers import JSONRenderer
 
 from .models import UserProfile, Record, Template, Status
 from .permissions import IsOwnerProfileOrReadOnly
-from .serializers import userProfileSerializer, RecordSerializer
+from .serializers import UserProfileSerializer, RecordSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
 class UserProfileListCreateView(ListCreateAPIView):
     queryset = UserProfile.objects.all()
-    serializer_class = userProfileSerializer
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -21,7 +21,7 @@ class UserProfileListCreateView(ListCreateAPIView):
 
 class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset = UserProfile.objects.all()
-    serializer_class = userProfileSerializer
+    serializer_class = UserProfileSerializer
     permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
 
 
@@ -59,7 +59,6 @@ class ExportView(APIView):
             file = Record.objects.all().order_by('id').filter(user_id=user)
             if file:
                 file = file.values(*file_name)[0]
-                print(*file_name)
                 for k, v in file.items():
                     print(k, v)
                     if k == 'created_at':
